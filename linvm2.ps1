@@ -12,7 +12,7 @@ az group create --name $ResourceGroupName --location $location
 az vm create `
     --resource-group $ResourceGroupName `
     --name $vmName `
-    --image "UbuntuLTS"  # Change this to the desired image name
+    --image "Ubuntu2204"  # Change this to the desired image name
     --admin-username $adminUsername `
     --admin-password $adminPassword `
     --size Standard_B2s  # You can change the VM size as needed
