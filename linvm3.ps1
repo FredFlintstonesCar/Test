@@ -1,5 +1,7 @@
+Remove-AzResourceGroup -Name "RG1" -Force
+
 # Variables
-$ResourceGroupName = "RG1"
+$ResourceGroupName = "RG2"
 $location = "East US"  # Change to your desired location
 $vmName = "LinuxVM"
 $adminUsername = "azureuser"  # Change this to your desired username
@@ -24,12 +26,27 @@ az vm open-port --resource-group $resourceGroupName --name $vmName --port 22
 az vm wait --name $vmName --resource-group $ResourceGroupName --created
 
 # Get the public IP address of the VM
-publicIp=$(az vm show --resource-group $resourceGroupName --name $vmName --query "publicIps" --output tsv)
+$publicIp = az vm show --resource-group $resourceGroupName --name $vmName --query "publicIps" --output tsv
 
 # Wait for a few seconds to ensure remoting is enabled
 # Start-Sleep -Seconds 30
 # Establish a remote session
 # $session = New-PSSession -ComputerName $vm.Name -Credential $adminCredential
+
+if ($publicIp) {
+    # Assuming you have a base64-encoded script
+    $base64Script = "YourBase64EncodedScriptHere"
+
+    # Decode the base64 script
+    $decodedScript = [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String($base64Script))
+
+    # Execute the decoded script on the VM
+    az vm extension set --resource-group $resourceGroupName --vm-name $vmName --name customScript --publisher Microsoft.Azure.Extensions --settings '{"script":"$decodedScript"}'
+} else {
+    Write-Host "Failed to retrieve the public IP of the VM."
+}
+
+end
 
 # SSH into the VM and install software (example: installing Apache web server)
 az vm extension set --resource-group $resourceGroupName --vm-name $vmName --name customScript --publisher Microsoft.Azure.Extensions --settings '{"script":"#!/bin/bash\nsudo apt update && sudo apt install -y nmap xrdp"}'
