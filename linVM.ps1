@@ -12,7 +12,7 @@ az group create --name $resourceGroupName --location $location
 az vm create `
     --resource-group $resourceGroupName `
     --name $vmName `
-    --image "Canonical:UbuntuServer:22.04-LTS:latest" `
+    --image "Ubuntu2204" `
     --admin-username $adminUsername `
     --admin-password $adminPassword `
     --size Standard_B2s  # You can change the VM size as needed
