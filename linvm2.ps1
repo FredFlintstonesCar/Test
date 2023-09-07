@@ -1,5 +1,5 @@
 # Variables
-$ResourceGroupName = "myres6"
+$ResourceGroupName = "myres7"
 $location = "East US"  # Change to your desired location
 $vmName = "mylinuxvm"
 $adminUsername = "azureuser"  # Change this to your desired username
