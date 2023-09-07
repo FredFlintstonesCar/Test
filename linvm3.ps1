@@ -1,7 +1,7 @@
-Remove-AzResourceGroup -Name "RG6" -Force -AsJob -ErrorAction Stop
+Remove-AzResourceGroup -Name "RG4" -Force -AsJob -q -ErrorAction Stop
 
 # Variables
-$ResourceGroupName = "RG7"
+$ResourceGroupName = "RG5"
 $location = "East US"  # Change to your desired location
 $vmName = "LinuxVM"
 $adminUsername = "azureuser"  # Change this to your desired username
@@ -20,7 +20,7 @@ az vm create `
     --admin-username $adminUsername `
     --admin-password $adminPassword `
     --size Standard_B2s `
-    --quiet -ErrorAction Stop
+    -q
 
 # Wait for VM provisioning to complete
 az vm wait --name $vmName --resource-group $ResourceGroupName --created
@@ -38,23 +38,23 @@ ssh-keygen -t rsa -b 2048 -f ~/.ssh/azure_ssh_key -N "" -q -ErrorAction Stop
 echo "Key Generated"
 
 # Upload SSH public key to the VM
-az vm user update --resource-group $ResourceGroupName --name $vmName --username $adminUsername --ssh-key-value "$(cat ~/.ssh/azure_ssh_key.pub)" --quiet
+az vm user update --resource-group $ResourceGroupName --name $vmName --username $adminUsername --ssh-key-value "$(cat ~/.ssh/azure_ssh_key.pub)" -q
 echo "Key Uploaded"
 
 # Display SSH private key
 # cat ~/.ssh/azure_ssh_key
 
 # Update
-az vm run-command invoke --resource-group $ResourceGroupName --name $vmName --command-id RunShellScript --script "sudo apt update -y" --quiet
+az vm run-command invoke --resource-group $ResourceGroupName --name $vmName --command-id RunShellScript --script "sudo apt update -y" -q
 echo "VM updated"
 
 # Install Nmap
-az vm run-command invoke --resource-group $ResourceGroupName --name $vmName --command-id RunShellScript --script "sudo apt install -y nmap" --quiet
+az vm run-command invoke --resource-group $ResourceGroupName --name $vmName --command-id RunShellScript --script "sudo apt install -y nmap" -q
 echo "Nmap installed"
 
 # Install xRDP
-az vm run-command invoke --resource-group $ResourceGroupName --name $vmName --command-id RunShellScript --script "sudo apt install -y xrdp" --quiet
+az vm run-command invoke --resource-group $ResourceGroupName --name $vmName --command-id RunShellScript --script "sudo apt install -y xrdp" -q
 echo "XRDP installed"
-az vm run-command invoke --resource-group $ResourceGroupName --name $vmName --command-id RunShellScript --script "sudo systemctl enable xrdp" --quiet
-az vm run-command invoke --resource-group $ResourceGroupName --name $vmName --command-id RunShellScript --script "echo xfce4-session >~/.xsession" --quiet
-az vm run-command invoke --resource-group $ResourceGroupName --name $vmName --command-id RunShellScript --script "sudo service xrdp restart" --quiet
+az vm run-command invoke --resource-group $ResourceGroupName --name $vmName --command-id RunShellScript --script "sudo systemctl enable xrdp" -q
+az vm run-command invoke --resource-group $ResourceGroupName --name $vmName --command-id RunShellScript --script "echo xfce4-session >~/.xsession" -q
+az vm run-command invoke --resource-group $ResourceGroupName --name $vmName --command-id RunShellScript --script "sudo service xrdp restart" -q
