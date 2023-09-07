@@ -1,5 +1,5 @@
 # Variables
-$ResourceGroupName = "myres8"
+$ResourceGroupName = "myres9"
 $location = "East US"  # Change to your desired location
 $vmName = "mylinuxvm"
 $adminUsername = "azureuser"  # Change this to your desired username
@@ -33,7 +33,7 @@ $adminCredential = New-Object System.Management.Automation.PSCredential ($adminU
 Enable-AzVMPSRemoting -ResourceGroupName $ResourceGroupName -Name $vmName
 
 # Wait for remoting to be enabled
-az vm wait --name $vmName --resource-group $ResourceGroupName --custom "vm.extensions[?name == 'CustomScriptForLinux'].settings.fileUris | contains(@, 'enable-psremoting.sh')" --interval 30 --timeout 1800
+az vm wait --name $vmName --resource-group $ResourceGroupName --custom "vm.extensions[?name == 'CustomScriptForLinux'].settings.fileUris | contains(@, 'enable-psremoting.sh') || []" --interval 30 --timeout 1800
 
 # Establish a remote session
 $session = New-PSSession -ComputerName $vm.Name -Credential $adminCredential
