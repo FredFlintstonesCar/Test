@@ -1,5 +1,5 @@
 # Variables
-$resourceGroupName = "myres3"
+$resourceGroupName = "myres4"
 $location = "East US"  # You can change the location as per your preference
 $vmName = "mylinuxvm"
 $adminUsername = "azureuser"  # Change this to your desired username
@@ -19,11 +19,17 @@ az vm create `
 
 $vm = Get-AzVM -ResourceGroupName $resourceGroupName -Name $vmName
 
+# Convert the admin password to a SecureString
+$adminSecurePassword = ConvertTo-SecureString -String $adminPassword -AsPlainText -Force
+
+# Create a PSCredential object
+$adminCredential = New-Object System.Management.Automation.PSCredential ($adminUsername, $adminSecurePassword)
+
 # Enable PowerShell remoting on the VM
 Enable-AzVMPSRemoting -ResourceGroupName $resourceGroupName -Name $vmName
 
 # Establish a remote session
-$session = New-PSSession -HostName $vm.Name -UserName $adminUsername -Password (ConvertTo-SecureString $adminPassword -AsPlainText -Force)
+$session = New-PSSession -HostName $vm.Name -Credential $adminCredential
 
 # Install nmap and xrdp
 Invoke-Command -Session $session -ScriptBlock {
