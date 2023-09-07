@@ -59,6 +59,8 @@ az vm extension set `
     --settings '{"script": "sudo apt install -y xrdp"}'
 
 echo "running commands"
+pause
+
 # SSH into the VM and install software (example: installing Apache web server)
 az vm extension set --resource-group $resourceGroupName --vm-name $vmName --name customScript --publisher Microsoft.Azure.Extensions --settings '{"script":"#!/bin/bash\nsudo systemctl enable xrdp"}'
 az vm extension set --resource-group $resourceGroupName --vm-name $vmName --name customScript --publisher Microsoft.Azure.Extensions --settings '{"script":"#!/bin/bash\necho xfce4-session >~/.xsession"}'
