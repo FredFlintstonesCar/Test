@@ -21,12 +21,13 @@ az vm create `
     --size Standard_B2s
 
 # Open ports for Nmap and xRDP
-az vm open-port --resource-group $resourceGroupName --name $vmName --port 3389 --priority 1001 --no-wait
-az vm open-port --resource-group $resourceGroupName --name $vmName --port 22 --priority 1002 --no-wait
+az vm open-port --resource-group $resourceGroupName --name $vmName --port 3389 --priority 1001
+az vm open-port --resource-group $resourceGroupName --name $vmName --port 22 --priority 1002
 
 # Get the public IP address and store it in a variable
-$publicIpAddress = az vm show --resource-group $resourceGroupName --name $vmName --query "publicIps" --output tsv
-echo "Public IP Address: $publicIpAddress"
+$publicIpAddress = az vm show --resource-group $ResourceGroupName --name $vmName --query "publicIpAddress" --output tsv
+echo "Public IP Address:" 
+echo $publicIpAddress
 
 # Generate SSH key pair
 ssh-keygen -t rsa -b 2048 -f ~/.ssh/azure_ssh_key -N ""
