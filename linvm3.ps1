@@ -8,8 +8,8 @@ $adminUsername = "azureuser"  # Change this to your desired username
 $adminPassword = "P@ssw0rd123!"  # Change this to your desired password
 
 # Create a resource group
-az group create --name $ResourceGroupName --location $location --quiet
-echo "RG &'$ResourceGroupName'&" created"
+az group create --name $ResourceGroupName --location $location -q
+echo "RG &'$ResourceGroupName'& created"
 
 # Create a Linux virtual machine
 az vm create `
@@ -26,8 +26,8 @@ az vm create `
 az vm wait --name $vmName --resource-group $ResourceGroupName --created
 
 # Open ports for Nmap and xRDP
-az vm open-port --resource-group $resourceGroupName --name $vmName --port 3389 --priority 1001 --quiet
-az vm open-port --resource-group $resourceGroupName --name $vmName --port 22 --priority 1002 --quiet
+az vm open-port --resource-group $resourceGroupName --name $vmName --port 3389 --priority 1001 -q
+az vm open-port --resource-group $resourceGroupName --name $vmName --port 22 --priority 1002 -q
 
 # Get the public IP address of the VM
 $publicIpAddress = az vm show --resource-group $resourceGroupName --name $vmName --show-details --query "publicIps" --output tsv
