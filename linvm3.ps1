@@ -1,7 +1,7 @@
-Remove-AzResourceGroup -Name "RG2" -Force -AsJob
+Remove-AzResourceGroup -Name "RG3" -Force -AsJob
 
 # Variables
-$ResourceGroupName = "RG3"
+$ResourceGroupName = "RG4"
 $location = "East US"  # Change to your desired location
 $vmName = "LinuxVM"
 $adminUsername = "azureuser"  # Change this to your desired username
@@ -42,15 +42,10 @@ az vm user update --resource-group $ResourceGroupName --name $vmName --username 
 cat ~/.ssh/azure_ssh_key
 
 # Install Nmap
-az vm run-command invoke --resource-group $ResourceGroupName --name $vmName --script "apt-get update && apt-get install -y nmap"
+az vm run-command invoke --resource-group $ResourceGroupName --name $vmName --command-id RunShellScript --script "apt-get update && apt-get install -y nmap"
 
 # Install xRDP
-az vm run-command invoke --resource-group $ResourceGroupName --name $vmName --script "sudo apt-get install -y xrdp"
-    
-echo "running commands"
-pause
-
-# SSH into the VM and install software (example: installing Apache web server)
-az vm extension set --resource-group $resourceGroupName --vm-name $vmName --name customScript --publisher Microsoft.Azure.Extensions --settings '{"script":"#!/bin/bash\nsudo systemctl enable xrdp"}'
-az vm extension set --resource-group $resourceGroupName --vm-name $vmName --name customScript --publisher Microsoft.Azure.Extensions --settings '{"script":"#!/bin/bash\necho xfce4-session >~/.xsession"}'
-az vm extension set --resource-group $resourceGroupName --vm-name $vmName --name customScript --publisher Microsoft.Azure.Extensions --settings '{"script":"#!/bin/bash\nsudo service xrdp restart"}'
+az vm run-command invoke --resource-group $ResourceGroupName --name $vmName --command-id RunShellScript --script "sudo apt-get install -y xrdp"
+az vm run-command invoke --resource-group $ResourceGroupName --name $vmName --command-id RunShellScript --script "sudo systemctl enable xrdp"
+az vm run-command invoke --resource-group $ResourceGroupName --name $vmName --command-id RunShellScript --script "echo xfce4-session >~/.xsession"
+az vm run-command invoke --resource-group $ResourceGroupName --name $vmName --command-id RunShellScript --script "sudo service xrdp restart"
