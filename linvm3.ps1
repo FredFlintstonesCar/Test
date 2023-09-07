@@ -44,11 +44,17 @@ echo "Key Uploaded"
 # Display SSH private key
 # cat ~/.ssh/azure_ssh_key
 
+# Update
+az vm run-command invoke --resource-group $ResourceGroupName --name $vmName --command-id RunShellScript --script "sudo apt update -y" --quiet -ErrorAction Stop
+echo "VM updated"
+
 # Install Nmap
-az vm run-command invoke --resource-group $ResourceGroupName --name $vmName --command-id RunShellScript --script "apt-get update && apt-get install -y nmap"
+az vm run-command invoke --resource-group $ResourceGroupName --name $vmName --command-id RunShellScript --script "sudo apt install -y nmap" --quiet -ErrorAction Stop
+echo "Nmap installed"
 
 # Install xRDP
-az vm run-command invoke --resource-group $ResourceGroupName --name $vmName --command-id RunShellScript --script "sudo apt-get install -y xrdp"
-az vm run-command invoke --resource-group $ResourceGroupName --name $vmName --command-id RunShellScript --script "sudo systemctl enable xrdp"
-az vm run-command invoke --resource-group $ResourceGroupName --name $vmName --command-id RunShellScript --script "echo xfce4-session >~/.xsession"
-az vm run-command invoke --resource-group $ResourceGroupName --name $vmName --command-id RunShellScript --script "sudo service xrdp restart"
+az vm run-command invoke --resource-group $ResourceGroupName --name $vmName --command-id RunShellScript --script "sudo apt install -y xrdp" --quiet -ErrorAction Stop
+echo "XRDP installed"
+az vm run-command invoke --resource-group $ResourceGroupName --name $vmName --command-id RunShellScript --script "sudo systemctl enable xrdp" --quiet -ErrorAction Stop
+az vm run-command invoke --resource-group $ResourceGroupName --name $vmName --command-id RunShellScript --script "echo xfce4-session >~/.xsession" --quiet -ErrorAction Stop
+az vm run-command invoke --resource-group $ResourceGroupName --name $vmName --command-id RunShellScript --script "sudo service xrdp restart" --quiet -ErrorAction Stop
