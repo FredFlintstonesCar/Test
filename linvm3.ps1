@@ -1,4 +1,5 @@
-Remove-AzResourceGroup -Name "RG6" -Force -AsJob -ErrorAction Stop
+Remove-AzResourceGroup -Name "RG4" -Force -AsJob
+Remove-AzResourceGroup -Name "RG6" -Force -AsJob
 
 # Variables
 $ResourceGroupName = "RG7"
