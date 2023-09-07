@@ -1,7 +1,7 @@
-Remove-AzResourceGroup -Name "RG9" -Force -AsJob
+Remove-AzResourceGroup -Name "RG1" -Force -AsJob
 
 # Variables
-$ResourceGroupName = "RG1"
+$ResourceGroupName = "RG2"
 $location = "East US"  # Change to your desired location
 $vmName = "LinuxVM"
 $adminUsername = "azureuser"  # Change this to your desired username
@@ -42,7 +42,7 @@ az vm user update --resource-group $resourceGroupName --name $vmName --username 
 cat ~/.ssh/azure_ssh_key
 
 # Install Nmap using a custom script
-nmapScript = "sudo apt update && apt install -y nmap"
+$nmapScript = "sudo apt update && apt install -y nmap"
 az vm extension set `
     --resource-group $resourceGroupName `
     --vm-name $vmName `
@@ -52,7 +52,7 @@ az vm extension set `
     --settings "{\"script\": \"$nmapScript\"}"
 
 # Install xRDP using a custom script
-xrdpScript = "sudo apt install -y xrdp"
+$xrdpScript = "sudo apt install -y xrdp"
 az vm extension set `
     --resource-group $resourceGroupName `
     --vm-name $vmName `
