@@ -1,7 +1,7 @@
-Remove-AzResourceGroup -Name "RG5" -Force -AsJob -ErrorAction Stop
+Remove-AzResourceGroup -Name "RG6" -Force -AsJob -ErrorAction Stop
 
 # Variables
-$ResourceGroupName = "RG6"
+$ResourceGroupName = "RG7"
 $location = "East US"  # Change to your desired location
 $vmName = "LinuxVM"
 $adminUsername = "azureuser"  # Change this to your desired username
@@ -9,7 +9,7 @@ $adminPassword = "P@ssw0rd123!"  # Change this to your desired password
 
 # Create a resource group
 az group create --name $ResourceGroupName --location $location --quiet
-echo "RG " & $ResourceGroupName & " created"
+echo "RG &'$ResourceGroupName'&" created"
 
 # Create a Linux virtual machine
 az vm create `
