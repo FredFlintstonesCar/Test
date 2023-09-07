@@ -1,7 +1,7 @@
-Remove-AzResourceGroup -Name "RG1" -Force -AsJob
+Remove-AzResourceGroup -Name "RG2" -Force -AsJob
 
 # Variables
-$ResourceGroupName = "RG2"
+$ResourceGroupName = "RG3"
 $location = "East US"  # Change to your desired location
 $vmName = "LinuxVM"
 $adminUsername = "azureuser"  # Change this to your desired username
@@ -33,33 +33,19 @@ echo "Public IP Address:"
 echo $publicIpAddress
 
 # Generate SSH key pair
-ssh-keygen -t rsa -b 2048 -f ~/.ssh/azure_ssh_key -N ""
+ssh-keygen -t rsa -b 2048 -f ~/.ssh/azure_ssh_key -N "" -q
 
 # Upload SSH public key to the VM
-az vm user update --resource-group $resourceGroupName --name $vmName --username $adminUsername --ssh-key-value "$(cat ~/.ssh/azure_ssh_key.pub)"
+az vm user update --resource-group $ResourceGroupName --name $vmName --username $adminUsername --ssh-key-value "$(cat ~/.ssh/azure_ssh_key.pub)"
 
 # Display SSH private key
 cat ~/.ssh/azure_ssh_key
 
-# Install Nmap using a custom script
-$nmapScript = "sudo apt update && apt install -y nmap"
-az vm extension set `
-    --resource-group $resourceGroupName `
-    --vm-name $vmName `
-    --name customScript `
-    --publisher Microsoft.Azure.Extensions `
-    --version 2.1 `
-    --settings "{\"script\": \"$nmapScript\"}"
+# Install Nmap
+az vm run-command invoke --resource-group $ResourceGroupName --name $vmName --script "apt-get update && apt-get install -y nmap"
 
-# Install xRDP using a custom script
-$xrdpScript = "sudo apt install -y xrdp"
-az vm extension set `
-    --resource-group $resourceGroupName `
-    --vm-name $vmName `
-    --name customScript `
-    --publisher Microsoft.Azure.Extensions `
-    --version 2.1 `
-    --settings "{\"script\": \"$xrdpScript\"}"
+# Install xRDP
+az vm run-command invoke --resource-group $ResourceGroupName --name $vmName --script "sudo apt-get install -y xrdp"
     
 echo "running commands"
 pause
