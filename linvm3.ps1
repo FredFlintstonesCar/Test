@@ -1,11 +1,12 @@
-Remove-AzResourceGroup -Name "RG2" -Force -AsJob
+Remove-AzResourceGroup -Name "RG4" -Force -AsJob
 
 # Variables
-$ResourceGroupName = "RG3"
+$ResourceGroupName = "RG5"
 $location = "East US"  # Change to your desired location
 $vmName = "LinuxVM"
 $adminUsername = "azureuser"  # Change this to your desired username
 $adminPassword = "P@ssw0rd123!"  # Change this to your desired password
+$sshPublicKeyPath = "~\.ssh\public\key.pub"
 
 # Create a resource group
 az group create --name $ResourceGroupName --location $location
@@ -15,9 +16,17 @@ az vm create `
     --resource-group $ResourceGroupName `
     --name $vmName `
     --image "Ubuntu2204" `
+    --public-ip-sku Standard `
     --admin-username $adminUsername `
     --admin-password $adminPassword `
-    --size Standard_B2s  # You can change the VM size as needed
+    --size Standard_B2s `
+    --public-ip-address "" `
+    --ssh-key-value $sshPublicKeyPath
+
+# Get the public IP address and store it in a variable
+publicIpAddress=$(az vm show -g $resourceGroupName -n $vmName --query "publicIps" -o tsv)
+
+echo "Public IP Address: $publicIpAddress"
 
 # Open port 22 for SSH (Linux VM)
 az vm open-port --resource-group $resourceGroupName --name $vmName --port 22
