@@ -1,7 +1,7 @@
-Remove-AzResourceGroup -Name "RG1" -Force
+Remove-AzResourceGroup -Name "RG2" -Force -AsJob
 
 # Variables
-$ResourceGroupName = "RG2"
+$ResourceGroupName = "RG3"
 $location = "East US"  # Change to your desired location
 $vmName = "LinuxVM"
 $adminUsername = "azureuser"  # Change this to your desired username
