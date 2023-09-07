@@ -1,7 +1,7 @@
-Remove-AzResourceGroup -Name "RG3" -Force -AsJob
+Remove-AzResourceGroup -Name "RG4" -Force -AsJob
 
 # Variables
-$ResourceGroupName = "RG4"
+$ResourceGroupName = "RG5"
 $location = "East US"  # Change to your desired location
 $vmName = "LinuxVM"
 $adminUsername = "azureuser"  # Change this to your desired username
@@ -23,13 +23,26 @@ az vm create `
     --public-ip-address "" `
     --ssh-key-value $sshPublicKeyPath
 
+# Open ports for Nmap and xRDP
+az vm open-port --resource-group $resourceGroupName --name $vmName --port 3389 --priority 1001 --protocol Tcp
+az vm open-port --resource-group $resourceGroupName --name $vmName --port 3389 --priority 1001 --protocol Udp
+az vm open-port --resource-group $resourceGroupName --name $vmName --port 3389 --priority 1002 --protocol Tcp
+az vm open-port --resource-group $resourceGroupName --name $vmName --port 3389 --priority 1002 --protocol Udp
+az vm open-port --resource-group $resourceGroupName --name $vmName --port 22 --priority 1003 --protocol Tcp
+
 # Get the public IP address and store it in a variable
 publicIpAddress=$(az vm show -g $resourceGroupName -n $vmName --query "publicIps" -o tsv)
 
 echo "Public IP Address: $publicIpAddress"
 
-# Open port 22 for SSH (Linux VM)
-az vm open-port --resource-group $resourceGroupName --name $vmName --port 22
+# Generate SSH key pair
+ssh-keygen -t rsa -b 2048 -f ~/.ssh/azure_ssh_key -N ""
+
+# Upload SSH public key to the VM
+az vm user update --resource-group $resourceGroupName --name $vmName --username $adminUsername --ssh-key-value "$(cat ~/.ssh/azure_ssh_key.pub)"
+
+# Display SSH private key
+cat ~/.ssh/azure_ssh_key
 
 # Wait for VM provisioning to complete
 az vm wait --name $vmName --resource-group $ResourceGroupName --created
