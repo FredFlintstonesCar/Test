@@ -1,7 +1,8 @@
-Remove-AzResourceGroup -Name "RG7" -Force -AsJob
+Remove-AzResourceGroup -Name "RG6" -Force -AsJob
+Remove-AzResourceGroup -Name "RG8" -Force -AsJob
 
 # Variables
-$ResourceGroupName = "RG8"
+$ResourceGroupName = "RG9"
 $location = "East US"  # Change to your desired location
 $vmName = "LinuxVM"
 $adminUsername = "azureuser"  # Change this to your desired username
@@ -19,6 +20,9 @@ az vm create `
     --admin-username $adminUsername `
     --admin-password $adminPassword `
     --size Standard_B2s
+
+# Wait for VM provisioning to complete
+az vm wait --name $vmName --resource-group $ResourceGroupName --created
 
 # Open ports for Nmap and xRDP
 az vm open-port --resource-group $resourceGroupName --name $vmName --port 3389 --priority 1001
@@ -38,8 +42,11 @@ az vm user update --resource-group $resourceGroupName --name $vmName --username 
 # Display SSH private key
 cat ~/.ssh/azure_ssh_key
 
-# Wait for VM provisioning to complete
-az vm wait --name $vmName --resource-group $ResourceGroupName --created
+# Base64 encode the script for Nmap installation
+$nmapScriptBase64 = [Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes("apt-get update && apt-get install -y nmap"))
+
+# Base64 encode the script for xRDP installation
+$xrdpScriptBase64 = [Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes("sudo apt-get install -y xrdp"))
 
 # Install Nmap
 az vm extension set `
@@ -48,7 +55,7 @@ az vm extension set `
     --name customScript `
     --publisher Microsoft.Azure.Extensions `
     --version 2.1 `
-    --settings '{"script": "apt update && apt install -y nmap"}'
+    --settings "{\"script\": \"$nmapScriptBase64\"}"
 
 # Install xRDP
 az vm extension set `
@@ -57,8 +64,8 @@ az vm extension set `
     --name customScript `
     --publisher Microsoft.Azure.Extensions `
     --version 2.1 `
-    --settings '{"script": "sudo apt install -y xrdp"}'
-
+    --settings "{\"script\": \"$xrdpScriptBase64\"}"
+    
 echo "running commands"
 pause
 
