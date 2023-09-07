@@ -1,12 +1,11 @@
-Remove-AzResourceGroup -Name "RG5" -Force -AsJob
+Remove-AzResourceGroup -Name "RG6" -Force -AsJob
 
 # Variables
-$ResourceGroupName = "RG6"
+$ResourceGroupName = "RG7"
 $location = "East US"  # Change to your desired location
 $vmName = "LinuxVM"
 $adminUsername = "azureuser"  # Change this to your desired username
 $adminPassword = "P@ssw0rd123!"  # Change this to your desired password
-$sshPublicKeyPath = "~\.ssh\public\key.pub"
 
 # Create a resource group
 az group create --name $ResourceGroupName --location $location
@@ -20,8 +19,7 @@ az vm create `
     --admin-username $adminUsername `
     --admin-password $adminPassword `
     --size Standard_B2s `
-    --public-ip-address "" `
-    --ssh-key-value $sshPublicKeyPath
+    --public-ip-address ""
 
 # Open ports for Nmap and xRDP
 az vm open-port --resource-group $resourceGroupName --name $vmName --port 3389 --priority 1001 --protocol Tcp
