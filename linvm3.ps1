@@ -9,7 +9,7 @@ $adminPassword = "P@ssw0rd123!"  # Change this to your desired password
 
 # Create a resource group
 az group create --name $ResourceGroupName --location $location --output none
-echo "Resource Group $ResourceGroupName created"
+echo "Created Resource Group: $ResourceGroupName"
 
 # Create a Linux virtual machine
 az vm create `
