@@ -1,3 +1,4 @@
+cls
 Remove-AzResourceGroup -Name "RG8" -Force -AsJob
 
 # Variables
