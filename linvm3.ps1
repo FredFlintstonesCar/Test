@@ -1,8 +1,8 @@
 cls
-Remove-AzResourceGroup -Name "RG8" -Force -AsJob
+Remove-AzResourceGroup -Name "ResGroup" -Force -AsJob
 
 # Variables
-$ResourceGroupName = "ResGroup"
+$ResourceGroupName = "ResGroup1"
 $location = "East US"  # Change to your desired location
 $vmName = "Linux_Ubuntu2204_VM"
 $adminUsername = "azureuser"  # Change this to your desired username
@@ -47,7 +47,7 @@ echo "Key Uploaded"
 # Update and install desktop
 az vm run-command invoke --resource-group $ResourceGroupName --name $vmName --command-id RunShellScript --script "sudo apt update -y" --output none
 echo "VM updated"
-az vm run-command invoke --resource-group $ResourceGroupName --name $vmName --command-id RunShellScript --script "sudo apt install kde-plasma-desktop -y" --output none
+az vm run-command invoke --resource-group $ResourceGroupName --name $vmName --command-id RunShellScript --script "sudo apt install ubuntu-gnome-desktop -y" --output none
 echo "VM Desktop installed"
 
 # Install Nmap
