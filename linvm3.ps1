@@ -1,16 +1,15 @@
-Remove-AzResourceGroup -Name "RG4" -Force -AsJob
-Remove-AzResourceGroup -Name "RG6" -Force -AsJob
+Remove-AzResourceGroup -Name "RG8" -Force -AsJob
 
 # Variables
-$ResourceGroupName = "RG7"
+$ResourceGroupName = "ResGroup"
 $location = "East US"  # Change to your desired location
-$vmName = "LinuxVM"
+$vmName = "Linux_Ubuntu2204_VM"
 $adminUsername = "azureuser"  # Change this to your desired username
 $adminPassword = "P@ssw0rd123!"  # Change this to your desired password
 
 # Create a resource group
 az group create --name $ResourceGroupName --location $location --output none
-echo "Resource Group '$ResourceGroupName' created"
+echo "Resource Group $ResourceGroupName created"
 
 # Create a Linux virtual machine
 az vm create `
@@ -32,7 +31,6 @@ az vm open-port --resource-group $resourceGroupName --name $vmName --port 22 --p
 
 # Get the public IP address of the VM
 $publicIpAddress = az vm show --resource-group $resourceGroupName --name $vmName --show-details --query "publicIps" --output tsv
-echo "Public IP Address: " $publicIpAddress
 
 # Generate SSH key pair
 ssh-keygen -t rsa -b 2048 -f ~/.ssh/azure_ssh_key -N ""
@@ -45,9 +43,11 @@ echo "Key Uploaded"
 # Display SSH private key
 # cat ~/.ssh/azure_ssh_key
 
-# Update
+# Update and install desktop
 az vm run-command invoke --resource-group $ResourceGroupName --name $vmName --command-id RunShellScript --script "sudo apt update -y" --output none
 echo "VM updated"
+az vm run-command invoke --resource-group $ResourceGroupName --name $vmName --command-id RunShellScript --script "sudo apt install kde-plasma-desktop -y" --output none
+echo "VM Desktop installed"
 
 # Install Nmap
 az vm run-command invoke --resource-group $ResourceGroupName --name $vmName --command-id RunShellScript --script "sudo apt install -y nmap" --output none
@@ -59,3 +59,5 @@ echo "XRDP installed"
 az vm run-command invoke --resource-group $ResourceGroupName --name $vmName --command-id RunShellScript --script "sudo systemctl enable xrdp" --output none
 az vm run-command invoke --resource-group $ResourceGroupName --name $vmName --command-id RunShellScript --script "echo xfce4-session >~/.xsession" --output none
 az vm run-command invoke --resource-group $ResourceGroupName --name $vmName --command-id RunShellScript --script "sudo service xrdp restart" --output none
+echo "Ready"
+echo "Public IP Address: " $publicIpAddress
